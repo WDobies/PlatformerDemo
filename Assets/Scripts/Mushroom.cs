@@ -5,18 +5,29 @@ public class Mushroom : Enemy
     [SerializeField] private int pushForce = 400;
     [SerializeField] private float stunDuration = 0.5f;
 
+    private bool isColliding = false;
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //attack player on collision
         if (collision.CompareTag("Player"))
-            if (player)
-                Attack();
+            if (player && !isColliding)
+            {
+                isColliding = true;
+                Attack();                
+            }
     }
 
     private void Attack()
     {
         PushPlayer();
         player.TakeDamage(damage);
+        Invoke("ResetAttack", 0.5f);
+    }
+
+    private void ResetAttack()
+    {
+        isColliding = false;
     }
 
     private void PushPlayer()
